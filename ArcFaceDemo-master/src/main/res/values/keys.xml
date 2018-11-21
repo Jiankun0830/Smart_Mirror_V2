@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+  <!-- Get the Dark Sky API key from: https://darksky.net/dev -->
+  <string name="dark_sky_api_key">fcac3af4080818c4b070985991b2ec96</string>
+</resources>

@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Smart_Mirror</string>
+    <string name="home_name">Mirror Home</string>
+    <string name="home_name_compact">Compact Mirror Home</string>
+    <string name="unknown_ip_address">Unknown IP Address</string>
+</resources>
