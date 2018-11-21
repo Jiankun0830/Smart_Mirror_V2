@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,9 +17,18 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.arcsoft.sdk_demo.DataUpdater.UpdateListener;
+import com.arcsoft.sdk_demo.Weather.WeatherData;
+
+import java.lang.reflect.Field;
+import java.util.Locale;
 
 public class MainActivity extends Activity implements OnClickListener {
 	private final String TAG = this.getClass().toString();
@@ -27,9 +37,65 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static final int REQUEST_CODE_IMAGE_OP = 2;
 	private static final int REQUEST_CODE_OP = 3;
 
+	//new added
+
+
+	private TextView temperatureView;
+	private TextView weatherSummaryView;
+	private TextView precipitationView;
+	private ImageView iconView;
+	private Util util;
+	private Weather weather;
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
+	private double getLocalizedTemperature(double temperatureFahrenheit) {
+		// First approximation: Fahrenheit for US and Celsius anywhere else.
+		return Locale.US.equals(Locale.getDefault()) ?
+				temperatureFahrenheit : (temperatureFahrenheit - 32.0) / 1.8;
+	}
+
+	private final UpdateListener<WeatherData> weatherUpdateListener =
+			new UpdateListener<WeatherData>() {
+				@Override
+				public void onUpdate(WeatherData data) {
+					if (data != null) {
+
+						// Populate the current temperature rounded to a whole number.
+						String temperature = String.format(Locale.US, "%d°",
+								Math.round(getLocalizedTemperature(data.currentTemperature)));
+						temperatureView.setText(temperature);
+
+						// Populate the 24-hour forecast summary, but strip any period at the end.
+						String summary = util.stripPeriod(data.daySummary);
+						weatherSummaryView.setText(summary);
+
+						// Populate the precipitation probability as a percentage rounded to a whole number.
+						String precipitation =
+								String.format(Locale.US, "%d%%", Math.round(100 * data.dayPrecipitationProbability));
+						precipitationView.setText(precipitation);
+
+						// Populate the icon for the current weather.
+						iconView.setImageResource(data.currentIcon);
+
+						// Show all the views.
+						temperatureView.setVisibility(View.VISIBLE);
+						weatherSummaryView.setVisibility(View.VISIBLE);
+						precipitationView.setVisibility(View.VISIBLE);
+						iconView.setVisibility(View.VISIBLE);
+					} else {
+
+						// Hide everything if there is no data.
+						temperatureView.setVisibility(View.GONE);
+						weatherSummaryView.setVisibility(View.GONE);
+						precipitationView.setVisibility(View.GONE);
+						iconView.setVisibility(View.GONE);
+					}
+				}
+			};
+
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -39,6 +105,14 @@ public class MainActivity extends Activity implements OnClickListener {
 		v.setOnClickListener(this);
 		v = this.findViewById(R.id.button2);
 		v.setOnClickListener(this);
+
+		temperatureView = (TextView) findViewById(R.id.temperature);
+		weatherSummaryView = (TextView) findViewById(R.id.weather_summary);
+		precipitationView = (TextView) findViewById(R.id.precipitation);
+		iconView = (ImageView) findViewById(R.id.icon);
+
+		weather = new Weather(this, weatherUpdateListener);
+		util = new Util(this);
 	}
 
 	/* (non-Javadoc)
@@ -88,7 +162,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				if( ((Application)getApplicationContext()).mFaceDB.mRegister.isEmpty() ) {
 					Toast.makeText(this, "Sign up first！", Toast.LENGTH_SHORT).show();
 				} else {
-					new AlertDialog.Builder(this)
+					AlertDialog builder = new AlertDialog.Builder(this)
 							.setTitle("Please Choose Camera")
 							.setIcon(android.R.drawable.ic_dialog_info)
 							.setItems(new String[]{"Back Camera", "Front Camera"}, new DialogInterface.OnClickListener() {
@@ -97,11 +171,35 @@ public class MainActivity extends Activity implements OnClickListener {
 											startDetector(which);
 										}
 									})
+
 							.show();
+					try {
+
+						Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+						mAlert.setAccessible(true);
+						Object mAlertController = mAlert.get(builder);
+
+						Field mTitle = mAlertController.getClass().getDeclaredField("mTitleView");
+						mTitle.setAccessible(true);
+						TextView mTitleView = (TextView) mTitle.get(mAlertController);
+						mTitleView.setTextSize(40);
+						mTitleView.setTextColor(Color.WHITE);
+
+						Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+						mMessage.setAccessible(true);
+						TextView mMessageView = (TextView) mMessage.get(mAlertController);
+						mMessageView.setTextColor(Color.WHITE);
+						mMessageView.setTextSize(30);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (NoSuchFieldException e) {
+						e.printStackTrace();
+					}
+
 				}
 				break;
 			case R.id.button1:
-				new AlertDialog.Builder(this)
+				AlertDialog builder = new AlertDialog.Builder(this)
 						.setTitle("Library/Take Photo")
 						.setIcon(android.R.drawable.ic_dialog_info)
 						.setItems(new String[]{"Library", "Take Photo"}, new DialogInterface.OnClickListener() {
@@ -128,6 +226,28 @@ public class MainActivity extends Activity implements OnClickListener {
 							}
 						})
 						.show();
+				try {
+
+					Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+					mAlert.setAccessible(true);
+					Object mAlertController = mAlert.get(builder);
+
+					Field mTitle = mAlertController.getClass().getDeclaredField("mTitleView");
+					mTitle.setAccessible(true);
+					TextView mTitleView = (TextView) mTitle.get(mAlertController);
+					mTitleView.setTextSize(40);
+					mTitleView.setTextColor(Color.WHITE);
+
+					Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+					mMessage.setAccessible(true);
+					TextView mMessageView = (TextView) mMessage.get(mAlertController);
+					mMessageView.setTextColor(Color.WHITE);
+					mMessageView.setTextSize(30);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (NoSuchFieldException e) {
+					e.printStackTrace();
+				}
 				break;
 			default:;
 		}
@@ -267,5 +387,28 @@ public class MainActivity extends Activity implements OnClickListener {
 		startActivityForResult(it, REQUEST_CODE_OP);
 	}
 
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		weather.start();
+	}
+
+	@Override
+	protected void onStop() {
+		weather.stop();
+		super.onStop();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		util.hideNavigationBar(temperatureView);
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		return util.onKeyUp(keyCode, event);
+	}
 }
 

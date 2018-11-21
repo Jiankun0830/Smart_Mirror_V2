@@ -1,20 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:paddingLeft="@dimen/outside_padding"
+    android:paddingRight="@dimen/outside_padding">
+
+    <!-- Weather -->
+    <TextView
+        android:id="@+id/temperature"
+        style="@style/TemperatureStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="left"
+        tools:text="72°"/>
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/weather_icon_size"
+        android:layout_height="@dimen/weather_icon_size"
+        android:scaleType="fitXY"
+        android:layout_alignBottom="@id/temperature"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/temperature"
+        tools:src="@drawable/partly_cloudy_day"/>
+    <TextView
+        android:id="@+id/weather_summary"
+        style="@style/WeatherTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/temperature"
+        android:gravity="left"
+        android:maxWidth="380dp"
+        tools:text="Mostly cloudy until tomorrow evening"/>
+    <TextView
+        android:id="@+id/precipitation"
+        style="@style/WeatherTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/weather_summary"
+        android:layout_marginTop="@dimen/precipitation_margin"
+        android:drawableLeft="@drawable/umbrella"
+        android:drawablePadding="@dimen/icon_margin"
+        tools:text="6%"/>
+
+    <!-- Time and date -->
+    <TextClock
+        android:id="@+id/time"
+        style="@style/TimeStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:format12Hour="h\uee01mm"
+        android:format24Hour="H\uee01mm"
+        android:gravity="right"
+        tools:text="12\uee0134"/>
+    <TextClock
+        android:id="@+id/date"
+        style="@style/DateStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/time"
+        android:format12Hour="EEEE\nMMMM d"
+        android:format24Hour="EEEE\nd MMMM"
+        android:gravity="right"
+        tools:text="Sunday\nMarch 4"/>
+
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="85dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Step1."
-            android:textColor="@color/colorAccent"/>
+            android:text="Step1"
+            android:textColor="@color/colorAccent" />
+
         <Button
             android:id="@+id/button1"
             android:layout_width="wrap_content"
@@ -24,15 +97,18 @@
 
     <LinearLayout
         android:id="@+id/LinearLayout2"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/LinearLayout1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="33dp">
+
         <TextView
-            android:text="Step2."
-            android:textColor="@color/colorAccent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="Step2"
+            android:textColor="@color/colorAccent" />
+
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
