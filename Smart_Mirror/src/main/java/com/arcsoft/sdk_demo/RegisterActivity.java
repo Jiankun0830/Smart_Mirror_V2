@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Html;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +39,6 @@ import com.arcsoft.facerecognition.AFR_FSDKVersion;
 import com.guo.android_extend.image.ImageConverter;
 import com.guo.android_extend.widget.ExtImageView;
 import com.guo.android_extend.widget.HListView;
-import com.guo.android_extend.widget.controller.ImageController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -279,11 +277,11 @@ public class RegisterActivity extends Activity implements SurfaceHolder.Callback
 					mExtImageView = (ExtImageView) layout.findViewById(R.id.extimageview);
 					mExtImageView.setImageBitmap((Bitmap) msg.obj);
 					final Bitmap face = (Bitmap) msg.obj;
-					new AlertDialog.Builder(RegisterActivity.this)
-							.setTitle("请输入注册名字")
+					new AlertDialog.Builder(RegisterActivity.this,R.style.MirrorAlertDialog)
+							.setTitle("Please enter the name")
 							.setIcon(android.R.drawable.ic_dialog_info)
 							.setView(layout)
-							.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+							.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
 									((Application)RegisterActivity.this.getApplicationContext()).mFaceDB.addFace(mEditText.getText().toString(), mAFR_FSDKFace, face);
@@ -291,7 +289,7 @@ public class RegisterActivity extends Activity implements SurfaceHolder.Callback
 									dialog.dismiss();
 								}
 							})
-							.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+							.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
 									dialog.dismiss();
@@ -299,15 +297,20 @@ public class RegisterActivity extends Activity implements SurfaceHolder.Callback
 							})
 							.show();
 				} else if(msg.arg1 == MSG_EVENT_NO_FEATURE ){
-					Toast.makeText(RegisterActivity.this, "人脸特征无法检测，请换一张图片", Toast.LENGTH_SHORT).show();
+					String ToastStr = "<font color='#FFFFFF'>"+"Facial features cannot be detected, please use another image"+"</font>";
+					Toast.makeText(RegisterActivity.this, Html.fromHtml(ToastStr), Toast.LENGTH_SHORT).show();
 				} else if(msg.arg1 == MSG_EVENT_NO_FACE ){
-					Toast.makeText(RegisterActivity.this, "没有检测到人脸，请换一张图片", Toast.LENGTH_SHORT).show();
+					String ToastStr = "<font color='#FFFFFF'>"+"No face detected, please use another image"+"</font>";
+					Toast.makeText(RegisterActivity.this, Html.fromHtml(ToastStr), Toast.LENGTH_SHORT).show();
 				} else if(msg.arg1 == MSG_EVENT_FD_ERROR ){
-					Toast.makeText(RegisterActivity.this, "FD初始化失败，错误码：" + msg.arg2, Toast.LENGTH_SHORT).show();
+					String ToastStr = "<font color='#FFFFFF'>"+"FD initialization error，error code："+"</font>";
+					Toast.makeText(RegisterActivity.this, Html.fromHtml(ToastStr), Toast.LENGTH_SHORT).show();
 				} else if(msg.arg1 == MSG_EVENT_FR_ERROR){
-					Toast.makeText(RegisterActivity.this, "FR初始化失败，错误码：" + msg.arg2, Toast.LENGTH_SHORT).show();
+					String ToastStr = "<font color='#FFFFFF'>"+"FR initialization error，error code："+"</font>";
+					Toast.makeText(RegisterActivity.this, Html.fromHtml(ToastStr), Toast.LENGTH_SHORT).show();
 				} else if(msg.arg1 == MSG_EVENT_IMG_ERROR){
-					Toast.makeText(RegisterActivity.this, "图像格式错误，：" + msg.obj, Toast.LENGTH_SHORT).show();
+					String ToastStr = "<font color='#FFFFFF'>"+"Wrong image format，："+"</font>";
+					Toast.makeText(RegisterActivity.this, Html.fromHtml(ToastStr), Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
@@ -380,11 +383,11 @@ public class RegisterActivity extends Activity implements SurfaceHolder.Callback
 			final int count = ((Application)mContext.getApplicationContext()).mFaceDB.mRegister.get(position).mFaceList.size();
 			final Map<String, AFR_FSDKFace> face = ((Application)mContext.getApplicationContext()).mFaceDB.mRegister.get(position).mFaceList;
 			new AlertDialog.Builder(RegisterActivity.this)
-					.setTitle("删除注册名:" + name)
-					.setMessage("包含:" + count + "个注册人脸特征信息")
+					.setTitle("delete registered name:" + name)
+					.setMessage("Contain:" + count + "registered face information")
 					.setView(new ListView(mContext))
 					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							((Application)mContext.getApplicationContext()).mFaceDB.delete(name);
@@ -392,7 +395,7 @@ public class RegisterActivity extends Activity implements SurfaceHolder.Callback
 							dialog.dismiss();
 						}
 					})
-					.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							dialog.dismiss();

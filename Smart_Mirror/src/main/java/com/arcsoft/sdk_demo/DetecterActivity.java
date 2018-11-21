@@ -11,6 +11,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -48,6 +49,7 @@ import com.guo.android_extend.widget.CameraSurfaceView.OnCameraListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by gqj3375 on 2017/4/28.
@@ -138,8 +140,8 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 				ASGE_FSDKError error2 = mGenderEngine.ASGE_FSDK_GenderEstimation_Image(mImageNV21, mWidth, mHeight, AFT_FSDKEngine.CP_PAF_NV21, face2, genders);
 				Log.d(TAG, "ASAE_FSDK_AgeEstimation_Image:" + error1.getCode() + ",ASGE_FSDK_GenderEstimation_Image:" + error2.getCode());
 				Log.d(TAG, "age:" + ages.get(0).getAge() + ",gender:" + genders.get(0).getGender());
-				final String age = ages.get(0).getAge() == 0 ? "年龄未知" : ages.get(0).getAge() + "岁";
-				final String gender = genders.get(0).getGender() == -1 ? "性别未知" : (genders.get(0).getGender() == 0 ? "男" : "女");
+				final String age = ages.get(0).getAge() == 0 ? "Unknown Age" : ages.get(0).getAge() + "years old";
+				final String gender = genders.get(0).getGender() == -1 ? "Unknown gender" : (genders.get(0).getGender() == 0 ? "Male" : "Female");
 				
 				//crop
 				byte[] data = mImageNV21;
@@ -164,10 +166,10 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 						public void run() {
 							mTextView.setAlpha(1.0f);
 							mTextView.setText(mNameShow);
-							mTextView.setTextColor(Color.RED);
+							mTextView.setTextColor(Color.WHITE);
 							mTextView1.setVisibility(View.VISIBLE);
-							mTextView1.setText("置信度：" + (float)((int)(max_score * 1000)) / 1000.0);
-							mTextView1.setTextColor(Color.RED);
+							mTextView1.setText("Confidence：" + (float)((int)(max_score * 1000)) / 1000.0);
+							mTextView1.setTextColor(Color.WHITE);
 							mImageView.setRotation(rotate);
 							mImageView.setScaleY(-mCameraMirror);
 							mImageView.setImageAlpha(255);
@@ -175,7 +177,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 						}
 					});
 				} else {
-					final String mNameShow = "未识别";
+					final String mNameShow = "Unrecognized";
 					DetecterActivity.this.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -208,10 +210,62 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 	private TextView mTextView1;
 	private ImageView mImageView;
 	private ImageButton mImageButton;
+	private TextView temperatureView;
+	private TextView weatherSummaryView;
+	private TextView precipitationView;
+	private ImageView iconView;
+	private Util util;
+	private Weather weather;
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
+	private double getLocalizedTemperature(double temperatureFahrenheit) {
+		// First approximation: Fahrenheit for US and Celsius anywhere else.
+		return Locale.US.equals(Locale.getDefault()) ?
+				temperatureFahrenheit : (temperatureFahrenheit - 32.0) / 1.8;
+	}
+
+	private final DataUpdater.UpdateListener<Weather.WeatherData> weatherUpdateListener =
+			new DataUpdater.UpdateListener<Weather.WeatherData>() {
+				@Override
+				public void onUpdate(Weather.WeatherData data) {
+					if (data != null) {
+
+						// Populate the current temperature rounded to a whole number.
+						String temperature = String.format(Locale.US, "%d°",
+								Math.round(getLocalizedTemperature(data.currentTemperature)));
+						temperatureView.setText(temperature);
+
+						// Populate the 24-hour forecast summary, but strip any period at the end.
+						String summary = util.stripPeriod(data.daySummary);
+						weatherSummaryView.setText(summary);
+
+						// Populate the precipitation probability as a percentage rounded to a whole number.
+						String precipitation =
+								String.format(Locale.US, "%d%%", Math.round(100 * data.dayPrecipitationProbability));
+						precipitationView.setText(precipitation);
+
+						// Populate the icon for the current weather.
+						iconView.setImageResource(data.currentIcon);
+
+						// Show all the views.
+						temperatureView.setVisibility(View.VISIBLE);
+						weatherSummaryView.setVisibility(View.VISIBLE);
+						precipitationView.setVisibility(View.VISIBLE);
+						iconView.setVisibility(View.VISIBLE);
+					} else {
+
+						// Hide everything if there is no data.
+						temperatureView.setVisibility(View.GONE);
+						weatherSummaryView.setVisibility(View.GONE);
+						precipitationView.setVisibility(View.GONE);
+						iconView.setVisibility(View.GONE);
+					}
+				}
+			};
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -260,6 +314,14 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 
 		mFRAbsLoop = new FRAbsLoop();
 		mFRAbsLoop.start();
+
+		temperatureView = (TextView) findViewById(R.id.temperature);
+		weatherSummaryView = (TextView) findViewById(R.id.weather_summary);
+		precipitationView = (TextView) findViewById(R.id.precipitation);
+		iconView = (ImageView) findViewById(R.id.icon);
+
+		weather = new Weather(this, weatherUpdateListener);
+		util = new Util(this);
 	}
 
 	/* (non-Javadoc)
@@ -401,6 +463,30 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 			mGLSurfaceView.setRenderConfig(mCameraRotate, mCameraMirror);
 			mGLSurfaceView.getGLES2Render().setViewDisplay(mCameraMirror, mCameraRotate);
 		}
+	}
+
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		weather.start();
+	}
+
+	@Override
+	protected void onStop() {
+		weather.stop();
+		super.onStop();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		util.hideNavigationBar(temperatureView);
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		return util.onKeyUp(keyCode, event);
 	}
 
 }

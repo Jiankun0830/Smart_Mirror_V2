@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 import com.arcsoft.sdk_demo.DataUpdater.UpdateListener;
 import com.arcsoft.sdk_demo.Weather.WeatherData;
 
-import java.lang.reflect.Field;
 import java.util.Locale;
 
 public class MainActivity extends Activity implements OnClickListener {
@@ -162,7 +160,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				if( ((Application)getApplicationContext()).mFaceDB.mRegister.isEmpty() ) {
 					Toast.makeText(this, "Sign up first！", Toast.LENGTH_SHORT).show();
 				} else {
-					AlertDialog builder = new AlertDialog.Builder(this)
+					AlertDialog builder = new AlertDialog.Builder(this,R.style.MirrorAlertDialog)
 							.setTitle("Please Choose Camera")
 							.setIcon(android.R.drawable.ic_dialog_info)
 							.setItems(new String[]{"Back Camera", "Front Camera"}, new DialogInterface.OnClickListener() {
@@ -171,10 +169,8 @@ public class MainActivity extends Activity implements OnClickListener {
 											startDetector(which);
 										}
 									})
-
 							.show();
-					try {
-
+					/*try {
 						Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
 						mAlert.setAccessible(true);
 						Object mAlertController = mAlert.get(builder);
@@ -190,16 +186,14 @@ public class MainActivity extends Activity implements OnClickListener {
 						TextView mMessageView = (TextView) mMessage.get(mAlertController);
 						mMessageView.setTextColor(Color.WHITE);
 						mMessageView.setTextSize(30);
-					} catch (IllegalAccessException e) {
+					} catch (IllegalAccessException | NoSuchFieldException e) {
 						e.printStackTrace();
-					} catch (NoSuchFieldException e) {
-						e.printStackTrace();
-					}
+					}*/
 
 				}
 				break;
 			case R.id.button1:
-				AlertDialog builder = new AlertDialog.Builder(this)
+				AlertDialog builder = new AlertDialog.Builder(this,R.style.MirrorAlertDialog)
 						.setTitle("Library/Take Photo")
 						.setIcon(android.R.drawable.ic_dialog_info)
 						.setItems(new String[]{"Library", "Take Photo"}, new DialogInterface.OnClickListener() {
@@ -226,28 +220,7 @@ public class MainActivity extends Activity implements OnClickListener {
 							}
 						})
 						.show();
-				try {
 
-					Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
-					mAlert.setAccessible(true);
-					Object mAlertController = mAlert.get(builder);
-
-					Field mTitle = mAlertController.getClass().getDeclaredField("mTitleView");
-					mTitle.setAccessible(true);
-					TextView mTitleView = (TextView) mTitle.get(mAlertController);
-					mTitleView.setTextSize(40);
-					mTitleView.setTextColor(Color.WHITE);
-
-					Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
-					mMessage.setAccessible(true);
-					TextView mMessageView = (TextView) mMessage.get(mAlertController);
-					mMessageView.setTextColor(Color.WHITE);
-					mMessageView.setTextSize(30);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (NoSuchFieldException e) {
-					e.printStackTrace();
-				}
 				break;
 			default:;
 		}
