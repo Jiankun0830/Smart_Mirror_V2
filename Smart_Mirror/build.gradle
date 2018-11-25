@@ -30,4 +30,7 @@ dependencies {
     implementation files('libs/genderestimation.jar')
     implementation 'com.github.scribejava:scribejava-apis:5.5.0'
     implementation 'com.guo.android_extend:android-extend:1.0.6'
+    implementation 'com.google.firebase:firebase-database:11.8.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

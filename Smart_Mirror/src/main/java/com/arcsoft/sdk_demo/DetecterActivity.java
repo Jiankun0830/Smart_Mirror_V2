@@ -37,6 +37,12 @@ import com.arcsoft.genderestimation.ASGE_FSDKError;
 import com.arcsoft.genderestimation.ASGE_FSDKFace;
 import com.arcsoft.genderestimation.ASGE_FSDKGender;
 import com.arcsoft.genderestimation.ASGE_FSDKVersion;
+import com.arcsoft.sdk_demo.DataUpdater.UpdateListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.guo.android_extend.GLES2Render;
 import com.guo.android_extend.java.AbsLoop;
 import com.guo.android_extend.java.ExtByteArrayOutputStream;
@@ -50,6 +56,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+//import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by gqj3375 on 2017/4/28.
@@ -174,6 +182,51 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 							mImageView.setScaleY(-mCameraMirror);
 							mImageView.setImageAlpha(255);
 							mImageView.setImageBitmap(bmp);
+
+							//firebase info extraction
+
+
+							mReference = FirebaseDatabase.getInstance().getReference();
+							DatabaseReference id = mReference.child(mNameShow).child("name");
+							DatabaseReference HW = mReference.child("1002959").child("HWDue");
+							DatabaseReference exam = mReference.child("1002959").child("examDate");
+
+							id.addValueEventListener(new ValueEventListener() {
+								@Override
+								public void onDataChange(DataSnapshot dataSnapshot) {
+									String value = dataSnapshot.getValue(String.class);
+									newsViews[0].setText("Good day, " + value);
+									Log.d(TAG, "Value is: " + value);
+								}
+
+								@Override
+								public void onCancelled(DatabaseError databaseError){}
+							});
+
+							HW.addValueEventListener(new ValueEventListener() {
+								@Override
+								public void onDataChange(DataSnapshot dataSnapshot) {
+									String value = dataSnapshot.getValue(String.class);
+									newsViews[1].setText("Recent Homework Due:" + value);
+									Log.d(TAG, "Value is: " + value);
+								}
+
+								@Override
+								public void onCancelled(DatabaseError databaseError){}
+							});
+
+							exam.addValueEventListener(new ValueEventListener() {
+								@Override
+								public void onDataChange(DataSnapshot dataSnapshot) {
+									String value = dataSnapshot.getValue(String.class);
+									newsViews[2].setText("Next Exam Date: " + value);
+									Log.d(TAG, "Value is: " + value);
+								}
+
+								@Override
+								public void onCancelled(DatabaseError databaseError){}
+							});
+
 						}
 					});
 				} else {
@@ -206,6 +259,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 		}
 	}
 
+	//mirror UI
 	private TextView mTextView;
 	private TextView mTextView1;
 	private ImageView mImageView;
@@ -216,6 +270,65 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 	private ImageView iconView;
 	private Util util;
 	private Weather weather;
+	private TextView[] newsViews = new TextView[NEWS_VIEW_IDS.length];
+	private static final int[] NEWS_VIEW_IDS = new int[]{
+			R.id.news_1,
+			R.id.news_2,
+			R.id.news_3,
+			R.id.news_4,
+			R.id.news_5,
+	};
+	private News news;
+
+	private DatabaseReference mReference;
+
+
+
+
+
+	private final UpdateListener<List<String>> newsUpdateListener =
+			new UpdateListener<List<String>>() {
+				@Override
+				public void onUpdate(List<String> headlines) {
+
+					/*
+					mReference = FirebaseDatabase.getInstance().getReference();
+					DatabaseReference id = mReference.child("1002959").child("name");
+					DatabaseReference HW = mReference.child("1002959").child("HWDue");
+					DatabaseReference exam = mReference.child("1002959").child("examDate");
+					ArrayList<DatabaseReference> reminders = new ArrayList<>();
+					reminders.add(id);
+					reminders.add(HW);
+					reminders.add(exam);
+					for (DatabaseReference i : reminders){
+						i.addValueEventListener(new ValueEventListener() {
+							@Override
+							public void onDataChange(DataSnapshot dataSnapshot) {
+								String value = dataSnapshot.getValue(String.class);
+								//newsViews[1].setText("name：" + value);
+								Log.d(TAG, "Value is: " + value);
+							}
+
+							@Override
+							public void onCancelled(DatabaseError databaseError){}
+						});
+					}
+					*/
+
+					// Populate the views with as many headlines as we have and hide the others.
+
+					for (int i = 3; i < NEWS_VIEW_IDS.length; i++) {
+						if ((headlines != null) && (i < headlines.size())) {
+							newsViews[i].setText(headlines.get(i));
+							//newsViews[i].setText("Homework "+(i+1)+" due on Nov"+(20-2*i));
+							newsViews[i].setVisibility(View.VISIBLE);
+						} else {
+							newsViews[i].setVisibility(View.GONE);
+						}
+					}
+
+				}
+			};
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -320,7 +433,12 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 		precipitationView = (TextView) findViewById(R.id.precipitation);
 		iconView = (ImageView) findViewById(R.id.icon);
 
+		for (int i = 0; i < NEWS_VIEW_IDS.length; i++) {
+			newsViews[i] = (TextView) findViewById(NEWS_VIEW_IDS[i]);
+		}
+
 		weather = new Weather(this, weatherUpdateListener);
+		news = new News(newsUpdateListener);
 		util = new Util(this);
 	}
 
@@ -470,11 +588,13 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 	protected void onStart() {
 		super.onStart();
 		weather.start();
+		news.start();
 	}
 
 	@Override
 	protected void onStop() {
 		weather.stop();
+		news.stop();
 		super.onStop();
 	}
 
