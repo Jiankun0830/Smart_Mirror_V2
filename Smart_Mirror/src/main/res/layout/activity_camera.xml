@@ -174,7 +174,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginBottom="@dimen/news_line_margin"
-            android:drawableLeft="@drawable/news"
             android:drawablePadding="@dimen/icon_margin"
             tools:text="U.S. prosecutors pull encrypted messages from phones seized in Cohen raids" />
 
@@ -185,7 +184,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginBottom="@dimen/news_line_margin"
-            android:drawableLeft="@drawable/news"
             android:drawablePadding="@dimen/icon_margin"
             tools:text="Trump quip about North Korea's Kim sparks outcry on social media" />
     </LinearLayout>

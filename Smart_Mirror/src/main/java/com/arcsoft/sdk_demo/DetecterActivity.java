@@ -188,8 +188,10 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 
 							mReference = FirebaseDatabase.getInstance().getReference();
 							DatabaseReference id = mReference.child(mNameShow).child("name");
-							DatabaseReference HW = mReference.child("1002959").child("HWDue");
-							DatabaseReference exam = mReference.child("1002959").child("examDate");
+							DatabaseReference HW = mReference.child(mNameShow).child("HWDue");
+							DatabaseReference exam = mReference.child(mNameShow).child("examDate");
+							DatabaseReference self = mReference.child(mNameShow).child("self");
+							DatabaseReference project = mReference.child(mNameShow).child("project");
 
 							id.addValueEventListener(new ValueEventListener() {
 								@Override
@@ -203,11 +205,23 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								public void onCancelled(DatabaseError databaseError){}
 							});
 
+							self.addValueEventListener(new ValueEventListener() {
+								@Override
+								public void onDataChange(DataSnapshot dataSnapshot) {
+									String value = dataSnapshot.getValue(String.class);
+									newsViews[1].setText("Personal reminder: " + value);
+									Log.d(TAG, "Value is: " + value);
+								}
+
+								@Override
+								public void onCancelled(DatabaseError databaseError){}
+							});
+
 							HW.addValueEventListener(new ValueEventListener() {
 								@Override
 								public void onDataChange(DataSnapshot dataSnapshot) {
 									String value = dataSnapshot.getValue(String.class);
-									newsViews[1].setText("Recent Homework Due:" + value);
+									newsViews[3].setText("Recent Homework Due:" + value);
 									Log.d(TAG, "Value is: " + value);
 								}
 
@@ -220,6 +234,18 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								public void onDataChange(DataSnapshot dataSnapshot) {
 									String value = dataSnapshot.getValue(String.class);
 									newsViews[2].setText("Next Exam Date: " + value);
+									Log.d(TAG, "Value is: " + value);
+								}
+
+								@Override
+								public void onCancelled(DatabaseError databaseError){}
+							});
+
+							project.addValueEventListener(new ValueEventListener() {
+								@Override
+								public void onDataChange(DataSnapshot dataSnapshot) {
+									String value = dataSnapshot.getValue(String.class);
+									newsViews[4].setText("Project Due: " + value);
 									Log.d(TAG, "Value is: " + value);
 								}
 
@@ -316,7 +342,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 					*/
 
 					// Populate the views with as many headlines as we have and hide the others.
-
+					/*
 					for (int i = 3; i < NEWS_VIEW_IDS.length; i++) {
 						if ((headlines != null) && (i < headlines.size())) {
 							newsViews[i].setText(headlines.get(i));
@@ -326,6 +352,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 							newsViews[i].setVisibility(View.GONE);
 						}
 					}
+					*/
 
 				}
 			};
