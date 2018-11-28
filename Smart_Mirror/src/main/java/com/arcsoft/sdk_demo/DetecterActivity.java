@@ -197,7 +197,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								@Override
 								public void onDataChange(DataSnapshot dataSnapshot) {
 									String value = dataSnapshot.getValue(String.class);
-									newsViews[0].setText("Good day, " + value);
+									reminderViews[0].setText("Good day, " + value);
 									Log.d(TAG, "Value is: " + value);
 								}
 
@@ -209,7 +209,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								@Override
 								public void onDataChange(DataSnapshot dataSnapshot) {
 									String value = dataSnapshot.getValue(String.class);
-									newsViews[1].setText("Personal reminder: " + value);
+									reminderViews[1].setText("Personal reminder: " + value);
 									Log.d(TAG, "Value is: " + value);
 								}
 
@@ -221,7 +221,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								@Override
 								public void onDataChange(DataSnapshot dataSnapshot) {
 									String value = dataSnapshot.getValue(String.class);
-									newsViews[3].setText("Recent Homework Due:" + value);
+									reminderViews[3].setText("Recent Homework Due:" + value);
 									Log.d(TAG, "Value is: " + value);
 								}
 
@@ -233,7 +233,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								@Override
 								public void onDataChange(DataSnapshot dataSnapshot) {
 									String value = dataSnapshot.getValue(String.class);
-									newsViews[2].setText("Next Exam Date: " + value);
+									reminderViews[2].setText("Next Exam Date: " + value);
 									Log.d(TAG, "Value is: " + value);
 								}
 
@@ -245,7 +245,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								@Override
 								public void onDataChange(DataSnapshot dataSnapshot) {
 									String value = dataSnapshot.getValue(String.class);
-									newsViews[4].setText("Project Due: " + value);
+									reminderViews[4].setText("Project Due: " + value);
 									Log.d(TAG, "Value is: " + value);
 								}
 
@@ -296,13 +296,14 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 	private ImageView iconView;
 	private Util util;
 	private Weather weather;
-	private TextView[] newsViews = new TextView[NEWS_VIEW_IDS.length];
-	private static final int[] NEWS_VIEW_IDS = new int[]{
-			R.id.news_1,
-			R.id.news_2,
-			R.id.news_3,
-			R.id.news_4,
-			R.id.news_5,
+	private TextView[] reminderViews = new TextView[REMINDERS_VIEW_IDS.length];
+	private static final int[] REMINDERS_VIEW_IDS = new int[]{
+			R.id.reminder_1,
+			R.id.reminder_2,
+			R.id.reminder_3,
+			R.id.reminder_4,
+			R.id.reminder_5,
+			R.id.news_6,
 	};
 	private News news;
 
@@ -317,42 +318,16 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 				@Override
 				public void onUpdate(List<String> headlines) {
 
-					/*
-					mReference = FirebaseDatabase.getInstance().getReference();
-					DatabaseReference id = mReference.child("1002959").child("name");
-					DatabaseReference HW = mReference.child("1002959").child("HWDue");
-					DatabaseReference exam = mReference.child("1002959").child("examDate");
-					ArrayList<DatabaseReference> reminders = new ArrayList<>();
-					reminders.add(id);
-					reminders.add(HW);
-					reminders.add(exam);
-					for (DatabaseReference i : reminders){
-						i.addValueEventListener(new ValueEventListener() {
-							@Override
-							public void onDataChange(DataSnapshot dataSnapshot) {
-								String value = dataSnapshot.getValue(String.class);
-								//newsViews[1].setText("name：" + value);
-								Log.d(TAG, "Value is: " + value);
-							}
-
-							@Override
-							public void onCancelled(DatabaseError databaseError){}
-						});
-					}
-					*/
-
 					// Populate the views with as many headlines as we have and hide the others.
-					/*
-					for (int i = 3; i < NEWS_VIEW_IDS.length; i++) {
+
+					for (int i = 5; i < REMINDERS_VIEW_IDS.length; i++) {
 						if ((headlines != null) && (i < headlines.size())) {
-							newsViews[i].setText(headlines.get(i));
-							//newsViews[i].setText("Homework "+(i+1)+" due on Nov"+(20-2*i));
-							newsViews[i].setVisibility(View.VISIBLE);
+							reminderViews[i].setText("Daily News: "+headlines.get(i));
+							reminderViews[i].setVisibility(View.VISIBLE);
 						} else {
-							newsViews[i].setVisibility(View.GONE);
+							reminderViews[i].setVisibility(View.GONE);
 						}
 					}
-					*/
 
 				}
 			};
@@ -460,8 +435,8 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 		precipitationView = (TextView) findViewById(R.id.precipitation);
 		iconView = (ImageView) findViewById(R.id.icon);
 
-		for (int i = 0; i < NEWS_VIEW_IDS.length; i++) {
-			newsViews[i] = (TextView) findViewById(NEWS_VIEW_IDS[i]);
+		for (int i = 0; i < REMINDERS_VIEW_IDS.length; i++) {
+			reminderViews[i] = (TextView) findViewById(REMINDERS_VIEW_IDS[i]);
 		}
 
 		weather = new Weather(this, weatherUpdateListener);

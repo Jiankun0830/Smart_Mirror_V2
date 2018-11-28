@@ -201,7 +201,7 @@ public class MainActivity extends Activity implements OnClickListener {
 							public void onClick(DialogInterface dialog, int which) {
 								switch (which){
 									case 1:
-										Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+										Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");//usage of implict intent
 										ContentValues values = new ContentValues(1);
 										values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
 										Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -210,7 +210,7 @@ public class MainActivity extends Activity implements OnClickListener {
 										startActivityForResult(intent, REQUEST_CODE_IMAGE_CAMERA);
 										break;
 									case 0:
-										Intent getImageByalbum = new Intent(Intent.ACTION_GET_CONTENT);
+										Intent getImageByalbum = new Intent(Intent.ACTION_GET_CONTENT);//usage of implict intent
 										getImageByalbum.addCategory(Intent.CATEGORY_OPENABLE);
 										getImageByalbum.setType("image/jpeg");
 										startActivityForResult(getImageByalbum, REQUEST_CODE_IMAGE_OP);
