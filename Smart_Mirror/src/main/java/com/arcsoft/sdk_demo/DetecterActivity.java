@@ -187,6 +187,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 
 
 							mReference = FirebaseDatabase.getInstance().getReference();
+
 							DatabaseReference id = mReference.child(mNameShow).child("name");
 							DatabaseReference HW = mReference.child(mNameShow).child("HWDue");
 							DatabaseReference exam = mReference.child(mNameShow).child("examDate");
@@ -409,8 +410,8 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 		mTextView1.setText("");
 
 		mImageView = (ImageView) findViewById(R.id.imageView);
-		mImageButton = (ImageButton) findViewById(R.id.imageButton);
-		mImageButton.setOnClickListener(this);
+		//mImageButton = (ImageButton) findViewById(R.id.imageButton);
+		//mImageButton.setOnClickListener(this);
 
 		AFT_FSDKError err = engine.AFT_FSDK_InitialFaceEngine(FaceDB.appid, FaceDB.ft_key, AFT_FSDKEngine.AFT_OPF_0_HIGHER_EXT, 16, 5);
 		Log.d(TAG, "AFT_FSDK_InitialFaceEngine =" + err.getCode());
