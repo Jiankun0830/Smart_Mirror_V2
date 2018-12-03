@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "115560483146",
+    "firebase_url": "https://smart-mirror-253de.firebaseio.com",
+    "project_id": "smart-mirror-253de",
+    "storage_bucket": "smart-mirror-253de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115560483146:android:746d4c6a33f5684e",
+        "android_client_info": {
+          "package_name": "com.arcsoft.sdk_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "115560483146-eam5r1jc9o23lvelmm9181atesnh7e07.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.arcsoft.sdk_demo",
+            "certificate_hash": "14045b58e54e107a3835019fd69bd2ee737a7be8"
+          }
+        },
+        {
+          "client_id": "115560483146-5cscu93u431353vef12ehe2qq0uc63in.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgUIhnp6PqYUawvgqUaddZc0ltgMRZ6HM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115560483146-5cscu93u431353vef12ehe2qq0uc63in.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

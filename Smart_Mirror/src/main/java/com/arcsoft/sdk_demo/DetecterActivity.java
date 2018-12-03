@@ -186,7 +186,45 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 							//firebase info extraction
 
 
+
 							mReference = FirebaseDatabase.getInstance().getReference();
+							/*
+							mReference.addValueEventListener(new ValueEventListener() {
+								@Override
+								public void onDataChange(DataSnapshot dataSnapshot) {
+									keys.clear();
+									values.clear();
+									for(DataSnapshot ds : dataSnapshot.getChildren()){
+										Log.i(TAG, ds.getKey());
+										Log.i(TAG, (String) ds.getValue()) ;
+
+										keys.add(ds.getKey());
+										values.add(ds.getValue(String.class));
+
+
+									}
+									index = keys.indexOf("name");
+									reminderViews[0].setText("Good day, " + values.get(index));
+									j = 1;
+									for (int i = 0; i < values.size(); i++) {
+										if ((values.get(i) != null) && (j < REMINDERS_VIEW_IDS.length - 1)&&(!keys.get(i).equals("name"))) {
+
+											reminderViews[j].setText(keys.get(i)+" : "+values.get(i));
+											reminderViews[j].setVisibility(View.VISIBLE);
+											j++;
+										}
+									}
+								}
+
+								@Override
+								public void onCancelled(DatabaseError databaseError) {
+
+								}
+							});
+							*/
+
+
+
 
 							DatabaseReference id = mReference.child(mNameShow).child("name");
 							DatabaseReference HW = mReference.child(mNameShow).child("HWDue");
@@ -254,6 +292,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 								public void onCancelled(DatabaseError databaseError){}
 							});
 
+
 						}
 					});
 				} else {
@@ -310,6 +349,11 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 
 	private DatabaseReference mReference;
 
+	private ArrayList<String> keys = new ArrayList<>();
+	private ArrayList<String> values = new ArrayList<>();
+	private String faceName;
+	int index = 0;
+	int j = 0;
 
 
 
