@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arcsoft.sdk_demo.DataUpdater.UpdateListener;
-import com.arcsoft.sdk_demo.Weather.WeatherData;
+import com.arcsoft.sdk_demo.WeatherUpdater.WeatherData;
 
 import java.util.Locale;
 
@@ -43,7 +43,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private TextView precipitationView;
 	private ImageView iconView;
 	private Util util;
-	private Weather weather;
+	private WeatherUpdater weather;
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -109,7 +109,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		precipitationView = (TextView) findViewById(R.id.precipitation);
 		iconView = (ImageView) findViewById(R.id.icon);
 
-		weather = new Weather(this, weatherUpdateListener);
+		weather = new WeatherUpdater(this, weatherUpdateListener);
 		util = new Util(this);
 	}
 

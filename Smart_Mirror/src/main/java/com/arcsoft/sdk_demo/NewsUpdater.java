@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * A helper class to regularly retrieve news headlines.
  */
-public class News extends DataUpdater<List<String>> {
-  private static final String TAG = News.class.getSimpleName();
+public class NewsUpdater extends DataUpdater<List<String>> {
+  private static final String TAG = NewsUpdater.class.getSimpleName();
 
   /**
-   * The URL of the "Top News" RSS feed from Reuters.
+   * The URL of the "Top NewsUpdater" RSS feed from Reuters.
    */
   private static final String NEWS_RSS_URL = "http://feeds.reuters.com/reuters/topNews";
 
@@ -34,7 +34,7 @@ public class News extends DataUpdater<List<String>> {
    */
   private final XmlPullParser parser;
 
-  public News(UpdateListener<List<String>> updateListener) {
+  public NewsUpdater(UpdateListener<List<String>> updateListener) {
     super(updateListener, UPDATE_INTERVAL_MILLIS);
 
     parser = Xml.newPullParser();

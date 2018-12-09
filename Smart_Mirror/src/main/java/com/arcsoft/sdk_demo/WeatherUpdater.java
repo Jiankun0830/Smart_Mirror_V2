@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * A helper class to regularly retrieve weather information.
  */
-public class Weather extends DataUpdater<Weather.WeatherData> {
-  private static final String TAG = Weather.class.getSimpleName();
+public class WeatherUpdater extends DataUpdater<WeatherUpdater.WeatherData> {
+  private static final String TAG = WeatherUpdater.class.getSimpleName();
 
   /**
    * The time in milliseconds between API calls to update the weather.
@@ -96,7 +96,7 @@ public class Weather extends DataUpdater<Weather.WeatherData> {
     }
   }
 
-  public Weather(Context context, UpdateListener<WeatherData> updateListener) {
+  public WeatherUpdater(Context context, UpdateListener<WeatherData> updateListener) {
     super(updateListener, UPDATE_INTERVAL_MILLIS);
     this.context = context;
   }

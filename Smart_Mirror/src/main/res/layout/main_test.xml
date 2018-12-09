@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/outside_padding"
     android:paddingRight="@dimen/outside_padding">
 
-    <!-- Weather -->
+    <!-- WeatherUpdater -->
     <TextView
         android:id="@+id/temperature"
         style="@style/TemperatureStyle"

@@ -43,7 +43,7 @@
     <item name="android:fontFamily">sans-serif-light</item>
   </style>
 
-  <style name="NewsStyle" parent="BaseTextStyle">
+  <style name="reminderStyle" parent="BaseTextStyle">
     <item name="android:textSize">@dimen/small_text_size</item>
     <item name="android:fontFamily">sans-serif-light</item>
     <item name="android:ellipsize">end</item>

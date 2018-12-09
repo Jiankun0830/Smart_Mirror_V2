@@ -59,10 +59,6 @@ import java.util.Locale;
 
 //import com.google.firebase.database.FirebaseDatabase;
 
-/**
- * Created by gqj3375 on 2017/4/28.
- */
-
 public class DetecterActivity extends Activity implements OnCameraListener, View.OnTouchListener, Camera.AutoFocusCallback, View.OnClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 
@@ -185,9 +181,38 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 
 							//firebase info extraction
 
-
-
 							mReference = FirebaseDatabase.getInstance().getReference();
+							DatabaseReference schoolEvent = mReference.child("schoolEvent");
+							schoolEvent.addValueEventListener(new ValueEventListener() {
+								@Override
+								public void onDataChange(DataSnapshot dataSnapshot) {
+									keys.clear();
+									values.clear();
+									for(DataSnapshot ds : dataSnapshot.getChildren()){
+										Log.i(TAG, ds.getKey());
+										Log.i(TAG, (String) ds.getValue()) ;
+
+										keys.add(ds.getKey());
+										values.add(ds.getValue(String.class));
+
+
+									}
+									j = 0;
+									for (int i = 5; i < REMINDERS_VIEW_IDS.length - 1; i++) {
+										if ((values != null)&&(j < values.size())) {
+											reminderViews[i].setText("School Event: "+keys.get(j)+" "+values.get(j));
+											reminderViews[i].setVisibility(View.VISIBLE);
+										} else {
+											reminderViews[i].setVisibility(View.GONE);
+										}
+									}
+								}
+
+								@Override
+								public void onCancelled(DatabaseError databaseError) {
+
+								}
+							});
 							/*
 							mReference.addValueEventListener(new ValueEventListener() {
 								@Override
@@ -335,7 +360,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 	private TextView precipitationView;
 	private ImageView iconView;
 	private Util util;
-	private Weather weather;
+	private WeatherUpdater weather;
 	private TextView[] reminderViews = new TextView[REMINDERS_VIEW_IDS.length];
 	private static final int[] REMINDERS_VIEW_IDS = new int[]{
 			R.id.reminder_1,
@@ -343,9 +368,10 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 			R.id.reminder_3,
 			R.id.reminder_4,
 			R.id.reminder_5,
-			R.id.news_6,
+			R.id.event_6,
+			R.id.news_7,
 	};
-	private News news;
+	private NewsUpdater news;
 
 	private DatabaseReference mReference;
 
@@ -365,7 +391,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 
 					// Populate the views with as many headlines as we have and hide the others.
 
-					for (int i = 5; i < REMINDERS_VIEW_IDS.length; i++) {
+					for (int i = 6; i < REMINDERS_VIEW_IDS.length; i++) {
 						if ((headlines != null) && (i < headlines.size())) {
 							reminderViews[i].setText("Daily News: "+headlines.get(i));
 							reminderViews[i].setVisibility(View.VISIBLE);
@@ -386,10 +412,10 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 				temperatureFahrenheit : (temperatureFahrenheit - 32.0) / 1.8;
 	}
 
-	private final DataUpdater.UpdateListener<Weather.WeatherData> weatherUpdateListener =
-			new DataUpdater.UpdateListener<Weather.WeatherData>() {
+	private final DataUpdater.UpdateListener<WeatherUpdater.WeatherData> weatherUpdateListener =
+			new DataUpdater.UpdateListener<WeatherUpdater.WeatherData>() {
 				@Override
-				public void onUpdate(Weather.WeatherData data) {
+				public void onUpdate(WeatherUpdater.WeatherData data) {
 					if (data != null) {
 
 						// Populate the current temperature rounded to a whole number.
@@ -484,8 +510,8 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 			reminderViews[i] = (TextView) findViewById(REMINDERS_VIEW_IDS[i]);
 		}
 
-		weather = new Weather(this, weatherUpdateListener);
-		news = new News(newsUpdateListener);
+		weather = new WeatherUpdater(this, weatherUpdateListener);
+		news = new NewsUpdater(newsUpdateListener);
 		util = new Util(this);
 	}
 

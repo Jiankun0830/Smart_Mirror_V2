@@ -13,10 +13,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by gqj3375 on 2017/2/24.
- */
-
 public class PermissionAcitivity extends Activity {
 	public static int PERMISSION_REQ = 0x123456;
 

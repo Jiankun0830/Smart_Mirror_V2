@@ -44,9 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by gqj3375 on 2017/4/27.
- */
 
 public class RegisterActivity extends Activity implements SurfaceHolder.Callback {
 	private final String TAG = this.getClass().toString();
