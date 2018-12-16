@@ -275,7 +275,7 @@ public class RegisterActivity extends Activity implements SurfaceHolder.Callback
 					mExtImageView.setImageBitmap((Bitmap) msg.obj);
 					final Bitmap face = (Bitmap) msg.obj;
 					new AlertDialog.Builder(RegisterActivity.this,R.style.MirrorAlertDialog)
-							.setTitle("Please enter the name")
+							.setTitle("Please enter student ID")
 							.setIcon(android.R.drawable.ic_dialog_info)
 							.setView(layout)
 							.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {

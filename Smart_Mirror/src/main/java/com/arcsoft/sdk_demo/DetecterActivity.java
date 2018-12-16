@@ -180,6 +180,7 @@ public class DetecterActivity extends Activity implements OnCameraListener, View
 							mImageView.setImageBitmap(bmp);
 
 							//firebase info extraction
+							//TODO: Use a FirebaseUpdater to update information from firebase, solve the bugs met
 
 							mReference = FirebaseDatabase.getInstance().getReference();
 							DatabaseReference schoolEvent = mReference.child("schoolEvent");

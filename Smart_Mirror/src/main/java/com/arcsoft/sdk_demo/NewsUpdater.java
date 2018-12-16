@@ -96,8 +96,7 @@ public class NewsUpdater extends DataUpdater<List<String>> {
   }
 
   /**
-   * Reads the contents of a {@code <title>} tag within an {@code <item>} tag at the current parser
-   * position.
+   * Reads the contents of a title tag within an item tag at the current parser position.
    */
   private String readItemTitle() throws IOException, XmlPullParserException {
     parser.require(XmlPullParser.START_TAG, null, "item");

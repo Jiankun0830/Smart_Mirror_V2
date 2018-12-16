@@ -11,29 +11,25 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An abstract class that continuously queries a data source on a background thread via
- * {@link #getData()} and updates the {@link UpdateListener} on the main thread with the result.
+ * getData() and updates the UpdateListener on the main thread with the result.
  */
 public abstract class DataUpdater<Data> {
 
   /**
-   * The {@link ScheduledExecutorService} used to query data on a background thread. All requests
+   * The ScheduledExecutorService used to query data on a background thread. All requests
    * are handled sequentially.
    */
   private final ScheduledExecutorService scheduledBackgroundExecutor =
       Executors.newSingleThreadScheduledExecutor();
 
-  /**
-   * The current task on the {@link #scheduledBackgroundExecutor} or {@code null} if there is none.
-   */
+
   private ScheduledFuture updateTask;
 
-  /**
-   * A {@link Handler} on the main thread.
-   */
+
   private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
   /**
-   * The {@link UpdateListener} called each time there is new data.
+   * The UpdateListener called each time there is new data.
    */
   private final UpdateListener<Data> updateListener;
 
@@ -49,14 +45,12 @@ public abstract class DataUpdater<Data> {
 
     /**
      * Called when there is new data.
-     *
-     * @param data The latest {@link Data} or {@code null} if there was an error.
      */
     void onUpdate(Data data);
   }
 
   /**
-   * When creating a new {@link DataUpdater}, provide a non-{@code null} {@link UpdateListener} and
+   * When creating a new DataUpdater, provide an UpdateListener and
    * an update interval in milliseconds.
    */
   public DataUpdater(UpdateListener<Data> updateListener, long updateIntervalMillis) {
@@ -112,13 +106,8 @@ public abstract class DataUpdater<Data> {
     Log.d(getTag(), "Updated.");
   }
 
-  /**
-   * Implement this to query the data source and return a {@link Data} instance or {@code null}.
-   */
+
   protected abstract Data getData();
 
-  /**
-   * Implement this to provide a tag for logging.
-   */
   protected abstract String getTag();
 }

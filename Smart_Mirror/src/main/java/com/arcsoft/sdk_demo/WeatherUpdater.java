@@ -13,25 +13,18 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * A helper class to regularly retrieve weather information.
- */
+// A helper class to regularly retrieve weather information.
 public class WeatherUpdater extends DataUpdater<WeatherUpdater.WeatherData> {
   private static final String TAG = WeatherUpdater.class.getSimpleName();
 
-  /**
-   * The time in milliseconds between API calls to update the weather.
-   */
+
   private static final long UPDATE_INTERVAL_MILLIS = TimeUnit.MINUTES.toMillis(5);
 
-  /**
-   * The context used to load string resources.
-   */
+
   private final Context context;
 
-  /**
-   * A {@link Map} from Dark Sky's icon code to the corresponding drawable resource ID.
-   */
+ //from Dark Sky's icon code to the corresponding drawable resource ID.
+
   private final Map<String, Integer> iconResources = new HashMap<String, Integer>() {{
     put("clear-day", R.drawable.clear_day);
     put("clear-night", R.drawable.clear_night);
@@ -45,44 +38,33 @@ public class WeatherUpdater extends DataUpdater<WeatherUpdater.WeatherData> {
     put("wind", R.drawable.wind);
   }};
 
-  /**
-   * The current location, which is assumed to be static.
-   */
+//The current location, which is assumed to be static.
+
   private Location location;
 
-  /**
-   * The data structure containing the weather information we are interested in.
-   */
+// The data structure containing the weather information we are interested in.
+
   public class WeatherData {
 
-    /**
-     * The current temperature in degrees Fahrenheit.
-     */
+//The current temperature in degrees Fahrenheit.
     public final double currentTemperature;
 
-    /**
-     * The current precipitation probability as a value between 0 and 1.
-     */
+//The current precipitation probability as a value between 0 and 1.
+
     public final double currentPrecipitationProbability;
 
-    /**
-     * A human-readable summary of the 24-hour forecast.
-     */
+// A human-readable summary of the 24-hour forecast.
     public final String daySummary;
 
-    /**
-     * The average precipitation probability during the 24-hour forecast as a value between 0 and 1.
-     */
+//The average precipitation probability during the 24-hour forecast as a value between 0 and 1.
     public final double dayPrecipitationProbability;
 
-    /**
-     * The resource ID of the icon representing the current weather conditions.
-     */
+ //The resource ID of the icon representing the current weather conditions.
+
     public final int currentIcon;
 
-    /**
-     * The resource ID of the icon representing the weather conditions during the 24-hour forecast.
-     */
+ //The resource ID of the icon representing the weather conditions during the 24-hour forecast.
+
     public final int dayIcon;
 
     public WeatherData(double currentTemperature, double currentPrecipitationProbability,
@@ -135,10 +117,8 @@ public class WeatherUpdater extends DataUpdater<WeatherUpdater.WeatherData> {
     }
   }
 
-  /**
-   * Creates the URL for a Dark Sky API request based on the specified {@link Location} or
-   * {@code null} if the location is unknown.
-   */
+// Creates the URL for a Dark Sky API request based on the specified location
+
   private String getRequestUrl(Location location) {
     if (location != null) {
       return String.format(Locale.US, "https://api.darksky.net/forecast/%s/%f,%f",
@@ -150,37 +130,29 @@ public class WeatherUpdater extends DataUpdater<WeatherUpdater.WeatherData> {
     }
   }
 
-  /**
-   * Reads the current temperature from the API response. API documentation:
-   * https://darksky.net/dev/docs
-   */
+// Reads the current temperature from the API response. API documentation
+
   private Double parseCurrentTemperature(JSONObject response) throws JSONException {
     JSONObject currently = response.getJSONObject("currently");
     return currently.getDouble("temperature");
   }
 
-  /**
-   * Reads the current precipitation probability from the API response. API documentation:
-   * https://darksky.net/dev/docs
-   */
+//Reads the current precipitation probability from the API response. API documentation
+
   private Double parseCurrentPrecipitationProbability(JSONObject response) throws JSONException {
     JSONObject currently = response.getJSONObject("currently");
     return currently.getDouble("precipProbability");
   }
 
-  /**
-   * Reads the 24-hour forecast summary from the API response. API documentation:
-   * https://darksky.net/dev/docs
-   */
+//Reads the 24-hour forecast summary from the API response. API documentation
+
   private String parseDaySummary(JSONObject response) throws JSONException {
     JSONObject hourly = response.getJSONObject("hourly");
     return hourly.getString("summary");
   }
 
-  /**
-   * Reads the 24-hour forecast precipitation probability from the API response. API documentation:
-   * https://darksky.net/dev/docs
-   */
+// Reads the 24-hour forecast precipitation probability from the API response. API documentation
+
   private Double parseDayPrecipitationProbability(JSONObject response) throws JSONException {
     JSONObject hourly = response.getJSONObject("hourly");
     JSONArray data = hourly.getJSONArray("data");
@@ -194,20 +166,16 @@ public class WeatherUpdater extends DataUpdater<WeatherUpdater.WeatherData> {
     return sum / data.length();
   }
 
-  /**
-   * Reads the current weather icon code from the API response. API documentation:
-   * https://darksky.net/dev/docs
-   */
+//Reads the current weather icon code from the API response. API documentation
+
   private Integer parseCurrentIcon(JSONObject response) throws JSONException {
     JSONObject currently = response.getJSONObject("currently");
     String icon = currently.getString("icon");
     return iconResources.get(icon);
   }
 
-  /**
-   * Reads the 24-hour forecast weather icon code from the API response. API documentation:
-   * https://darksky.net/dev/docs
-   */
+  //Reads the 24-hour forecast weather icon code from the API response. API documentation
+
   private Integer parseDayIcon(JSONObject response) throws JSONException {
     JSONObject hourly = response.getJSONObject("hourly");
     String icon = hourly.getString("icon");
